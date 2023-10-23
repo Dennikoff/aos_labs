@@ -9,6 +9,8 @@ int main(int arhc, char** argv) {
 	if((file = open("test", O_RDONLY)) == -1) {
 		char errnoString[20];
 		int size = sprintf(errnoString, "errno: %d\n", errno);
+		printf("%d\n", STDOUT_FILENO);
+		printf("%d\n", STDIN_FILENO);
 		write(STDOUT_FILENO, errnoString, sizeof(char) * strlen(errnoString));
 		printf("Sys errlist 1: %s\n", strerror(errno));
 		// printf("Sys errlist 2: %s\n", sys_errlist[errno]);

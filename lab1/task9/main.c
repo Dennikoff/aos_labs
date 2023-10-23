@@ -31,10 +31,10 @@ int main(int argc, char** argv) {
     } else {
         saveIn = dup(0);
         saveOut = dup(1);
-        close(1);
         fileOut = open(argv[1], O_RDONLY);
-        close(0);
         fileIn = open(argv[2], O_WRONLY | O_CREAT | O_TRUNC, 0600);
+        dup2(fileOut, STDOUT_FILENO);
+        dup2(fileIn, STDIN_FILENO);
         if(fileOut == -1) {
             perror("Error file 'OUT'");
         }
