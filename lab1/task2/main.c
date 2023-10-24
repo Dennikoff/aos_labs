@@ -16,12 +16,12 @@ int main(int argc, char** argv) {
     if((file = open(filename, O_RDWR | O_CREAT, permissions)) == -1) {
         perror("Error in opening file");
     } else {
-        const char someString1[] = "string 1\n";
-        const char someString2[] = "string 2\n";
-        const char someString3[] = "string 3\n";
-        write(file, someString1, sizeof(char) * (sizeof(someString1) - 1));
-        write(file, someString2, sizeof(char) * (sizeof(someString2) - 1));
-        write(file, someString3, sizeof(char) * (sizeof(someString3) - 1));
+        const char someString1[] = "string 1";
+        const char someString2[] = "string 2";
+        const char someString3[] = "string 3";
+        write(file, someString1, sizeof(char) * (strlen(someString1)));
+        write(file, someString2, sizeof(char) * (strlen(someString2)));
+        write(file, someString3, sizeof(char) * (strlen(someString3)));
     }
     close(file);
     int temp_res, temp_lseek;
@@ -29,7 +29,7 @@ int main(int argc, char** argv) {
         perror("Error in opening file");
     } else {
         const int fileSize = lseek(file, 0, SEEK_END);
-        char* buf[64];
+        char buf[64];
         temp_lseek = lseek(file, 0, SEEK_SET);
         if(temp_lseek == -1) {
             perror("Lseek Error");
