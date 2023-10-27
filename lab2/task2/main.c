@@ -12,7 +12,7 @@
 int main(int argc, char** argv, char** envp) {
     pid_t parentId = getpid();
     pid_t childId = fork();
-    if(getpid() == parentId) {
+    if(childId != 0) {
         getchar();
         printf("I am parent\n");
     } else {

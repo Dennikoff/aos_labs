@@ -14,7 +14,7 @@ int main(int argc, char** argv, char** envp) {
     pid_t childId = fork();
     if(getpid() == parentId) {
         printf("\nI am parent\n");
-        printf("clildId %d\n", )
+        printf("clildId %d\n", childId);
         printf("Pid: %d\n", getpid());
         printf("Parent Pid: %d\n", getppid());
         printf("Gid: %d\n", getgid());

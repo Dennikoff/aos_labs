@@ -15,24 +15,26 @@ int main(int argc, char** argv, char** envp) {
         printf("\nI am parent\n");
         printf("Pid: %d\n", getpid());
         printf("Parent Pid: %d\n", getppid());
-        printf("Gid: %d\n", getgid());
+        printf("Gid: %d\n", getpgid(getppid()));
         pause();
         printf("\n-------------\n");
     } else {
         printf("\nI am child\n");
         printf("Pid before: %d\n", getpid());
-        printf("Parent Pid before: %d\n", getppid());
-        printf("Gid before: %d\n", getgid());
+        printf("PPid before: %d\n", getppid());
+        printf("Gid before: %d\n", getpgid(getppid()));
         
         // if(setpgid(0, 400) == -1) {
         //     perror("setpgid error");
         // }
+
         if(setpgrp() == -1) {
             perror("Setpgrp error");
         }
+    
         printf("Pid before after: %d\n", getpid());
         printf("Parent Pid after: %d\n", getppid());
-        printf("Gid after: %d\n", getgid());
+        printf("Gid after: %d\n", getpgid(getppid()));
         pause();
     }
     

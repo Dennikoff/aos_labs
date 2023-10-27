@@ -36,12 +36,12 @@ int main(int argc, char **argv) {
     if (childId == 0) {
         printf("I'm child\n");
         int fileIn = open("fileOutChild.txt", O_RDWR | O_CREAT, 0700);
-        copy(fileOut, fileIn);
+        copy(fileOut, 1);
     }
     else {
         printf("I'm parent\n");
         int fileIn = open("fileOutParent.txt", O_RDWR | O_CREAT, 0700);
-        copy(fileOut, fileIn);
+        copy(fileOut, 1);
     }
     return 0;
 }
