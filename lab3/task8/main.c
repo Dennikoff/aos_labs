@@ -11,6 +11,12 @@ void sigHandler(int sigNum) {
     printf("Get signal %d\n", sigNum);
 }
 
+int LOOP_NUMBER = 1000;
+
+void sigHandler2(int sigNum) {
+    printf("Get signal %d\n", sigNum);
+    LOOP_NUMBER = 2000;
+}
 
 int main(int argc, char** argv) {
     printf("Pid: %d\n", getpid());
@@ -19,14 +25,15 @@ int main(int argc, char** argv) {
     const int childId = fork();
     if(childId == 0) {
         printf("Im child pid: %d \n", getpid());
+        signal(SIGINT, sigHandler2);
         int i = 0, j = 0;
-        for(int i = 0; i < 1000; ++i) {
+        for(int i = 0; i < LOOP_NUMBER; ++i) {
             for (int j = 0; j < 1000; ++j) {
                 printf("i = %d\n", i);
             }
         }
-        
-        // Задание 7
+
+        //Задание 7
         // pause();
 
         exit(5);
@@ -34,8 +41,7 @@ int main(int argc, char** argv) {
         printf("Im parent pid: %d \n", getpid());
         int status;
         sleep(1);
-        kill(childId, SIGCONT);
-        // wait(&status);
+        kill(childId, SIGINT);
         waitpid(childId, &status, 0);
         if(WIFEXITED(status)){
             int exitStatus = WEXITSTATUS(status);
