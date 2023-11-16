@@ -11,9 +11,6 @@ void sigHandler(int sigNum) {
     printf("Get signal %d\n", sigNum);
 }
 
-void sigHandler2(int sigNum) {
-    printf("Get signal %d\n", sigNum);
-}
 
 int main(int argc, char** argv) {
     printf("Pid: %d\n", getpid());
@@ -23,13 +20,15 @@ int main(int argc, char** argv) {
     if(childId == 0) {
         printf("Im child pid: %d \n", getpid());
         int i = 0, j = 0;
-        signal(SIGINT, sigHandler2);
+        
         for(int i = 0; i < 1000; ++i) {
             for (int j = 0; j < 1000; ++j) { 
                 printf("i = %d\n", i);
             }
         }
-        
+
+        // 7 задание
+        // pause();
         
         exit(5);
     } else {
@@ -39,8 +38,6 @@ int main(int argc, char** argv) {
             perror("Sigaction Error");
             return -1;
         }
-        sleep(1);
-        kill(childId, SIGINT)
         // wait(&status);
         waitpid(childId, &status, 0);
         if(WIFEXITED(status)){

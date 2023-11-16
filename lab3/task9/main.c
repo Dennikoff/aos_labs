@@ -11,7 +11,7 @@ void sigHandler(int sigNum) {
     printf("Get signal %d\n", sigNum);
 }
 
-int LOOP_NUMBER = 300;
+int LOOP_NUMBER = 1000;
 
 void sigHandler2(int sigNum) {
     printf("Get signal %d\n", sigNum);
@@ -27,7 +27,6 @@ int main(int argc, char** argv) {
         printf("Im child pid: %d \n", getpid());
         signal(SIGALRM, sigHandler2);
         alarm(1);
-        alarm(2);
         int i = 0, j = 0;
         for(int i = 0; i < LOOP_NUMBER; ++i) {
             for (int j = 0; j < 1000; ++j) {

@@ -33,8 +33,6 @@ int main(int argc, char** argv) {
             }
         }
 
-        //Задание 7
-        // pause();
 
         exit(5);
     } else {

@@ -12,5 +12,5 @@ void sigHandler(int sigNum) {
 int main(int argc, char** argv) {
     printf("Pid: %d\n", getpid());
     signal(SIGINT, sigHandler); // ctrl + c
-    pause();   
+    pause();
 }
