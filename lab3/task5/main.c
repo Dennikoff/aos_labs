@@ -34,7 +34,7 @@ int main(int argc, char** argv) {
         printf("Im parent pid: %d \n", getpid());
         int status;
         sleep(1);
-        kill(childId, SIGCONT);
+        kill(childId, SIGUSR1);
         // wait(&status);
         waitpid(childId, &status, 0);
         if(WIFEXITED(status)){

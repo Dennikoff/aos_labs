@@ -52,7 +52,6 @@ int main(int argc, char** argv) {
         printf("Sending SIGUSR1\n");
 
         kill(getppid(), SIGUSR1);
-        sleep(1);
     } else {
         printf("Im parent pid: %d \n", getpid());
         
@@ -62,9 +61,7 @@ int main(int argc, char** argv) {
 
         printf("Start suspending parent\n");
         sigsuspend(&tempMask);
-        kill(childId, SIGUSR2);
         printf("Sync completed\n");
-
         
     }
     return 0;
