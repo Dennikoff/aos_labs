@@ -17,24 +17,25 @@ int main(int argc, char** argv) {
     int childId = fork();
     if(childId == 0) {
         printf("Child\n");
-        int readCount;
-        // while((readCount = read(0, temp, 20)) > 1) {
-        //     write(chanelDesk[1], temp, readCount);
-        // }
-        printf("child OUT\n");
         close(chanelDesk[0]);
+        int readCount;
+        while((readCount = read(0, temp, 20)) > 1) {
+            write(chanelDesk[1], temp, readCount);
+        }
+        printf("child OUT\n");
+
         close(chanelDesk[1]);
 
     } else {
         printf("Parent\n");
         sleep(1);
+        close(chanelDesk[1]);
         int readCount;
         while((readCount = read(chanelDesk[0], temp, 20)) > 0) {
             write(1, temp, readCount);
         }
-        
         close(chanelDesk[0]);
-        close(chanelDesk[1]);
+
     }
     return 0;
 }
