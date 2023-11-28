@@ -20,25 +20,19 @@ int main(int argc, char **argv)
     {
         printf("Child\n");
         close(chanelDesk[0]);
-        int readCount;
-        char fileIn[2];
-        char fileOut[2];
-        sprintf(fileIn, "%d", 0);
-        sprintf(fileOut, "%d", chanelDesk[1]);
-        execl("exec.out", "exec.out", fileIn, fileOut, NULL);
+        close(1);
+        dup(chanelDesk[1]);
+        close(chanelDesk[1]);
+        execlp("who", "who", NULL);
     }
     else
     {
         printf("Parent\n");
-        sleep(1);
         close(chanelDesk[1]);
-        int readCount;
-        while ((readCount = read(chanelDesk[0], temp, 20)) > 0)
-        {
-            printf("some info from child: %s\n", temp);
-            // write(1, temp, readCount);
-        }
+        close(0);
+        dup(chanelDesk[0]);
         close(chanelDesk[0]);
+        execlp("wc", "wc", "-l", NULL);
     }
     return 0;
 }
