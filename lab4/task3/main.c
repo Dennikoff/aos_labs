@@ -16,7 +16,6 @@ int main(int argc, char** argv) {
     char temp[100];
     pipe(chanelDeskChildWrite);
     pipe(chanelDeskChildRead);
-    char* message = "Hello";
     int childId = fork();
     if(childId == 0) {
         printf("Child\n");
@@ -49,8 +48,7 @@ int main(int argc, char** argv) {
                 break;
             }
             printf("Parent read from child: %s\n", temp);
-            write(chanelDeskChildRead[1], temp, readCount); 
-            
+            write(chanelDeskChildRead[1], temp, readCount);             
         }
         printf("parent OUT\n");
 
