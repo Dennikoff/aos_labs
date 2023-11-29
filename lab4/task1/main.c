@@ -15,7 +15,7 @@ int main(int argc, char** argv) {
         printf("Not enough parameters\n"); 
         exit(-1);
     }
-    bool mode = strcmp(argv[1], "1") == 0; // if 1 => twoways chanel
+    bool mode = strcmp(argv[1], "1") == 0; // if 1 => twoways chanel  
     int chanelDesk[2];
     char temp[1];
     pipe(chanelDesk);

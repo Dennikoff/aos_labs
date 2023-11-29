@@ -28,8 +28,8 @@ int main(int argc, char **argv)
 
     int file, readCount;
 
-    file = open(fName, O_RDONLY | O_NDELAY); //
-    sleep(4); //
+    file = open(fName, O_RDONLY); // | O_NDELAY); //
+    // sleep(4); //
     while(read(file, temp, 20) > 0) {
         printf("Read from chanel %s", temp);
     }
