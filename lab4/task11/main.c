@@ -37,12 +37,26 @@ int main(int argc, char **argv)
                 break;
             }
             lock.l_type = F_WRLCK;
-            fcntl(0, F_SETLKW, lock);
+            // if(fcntl(STDOUT_FILENO, F_SETLKW, lock) < 0){
+            //     perror("Child FCNTL lock error");
+            // }
+            if(flock(STDOUT_FILENO, LOCK_EX) == 0){
+                printf("Child blocked\n");
+            } else {
+                printf("Child blocked error\n");
+            }
+            
 
-            printf("Child: %s\n", temp);
-
-            lock.l_type = F_UNLCK;
-            fcntl(0, F_SETLKW, lock);
+            write(STDOUT_FILENO, "Child:", sizeof("Child:"));
+            write(STDOUT_FILENO, temp, readCount);
+            write(STDOUT_FILENO, "\n", 1);
+            // lock.l_type = F_UNLCK;
+            // fcntl(STDOUT_FILENO, F_SETLKW, lock);
+            if(flock(STDOUT_FILENO, LOCK_UN) == 0){
+                printf("Child unblocked\n");
+            } else {
+                printf("Child unblocked error\n");
+            }
         }
         
 
@@ -56,13 +70,26 @@ int main(int argc, char **argv)
             if(readCount <= 1) {
                 break;
             }
-            lock.l_type = F_WRLCK;
-            fcntl(0, F_SETLKW, lock);
+            // lock.l_type = F_WRLCK;
+            // if(fcntl(STDIN_FILENO, F_SETLKW, lock) < 0){
+            //     perror("Parent FCNTL lock error");
+            // }
+            if(flock(STDOUT_FILENO, LOCK_EX) == 0){
+                printf("Parent blocked\n");
+            } else {
+                printf("Parent blocked error\n");
+            }
+            write(STDOUT_FILENO, "Parent:", sizeof("Parent:"));
+            write(STDOUT_FILENO, temp, readCount);
+            write(STDOUT_FILENO, "\n", 1);
 
-            printf("Parent: %s\n", temp);
-            
-            lock.l_type = F_UNLCK;
-            fcntl(0, F_SETLKW, lock);
+            // lock.l_type = F_UNLCK;
+            // fcntl(STDOUT_FILENO, F_SETLKW, lock);
+            if(flock(STDOUT_FILENO, LOCK_UN) == 0){
+                printf("Parent unblocked\n");
+            } else {
+                printf("Parent unblocked error\n");
+            }
         }
     }
 
