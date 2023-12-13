@@ -41,6 +41,7 @@ int main(int argc, char **argv)
         printf("Child\n");
         char temp[10];
         file = open(fName, O_RDONLY);
+        sleep(1);
         if (file < 0)
         {
             perror("Error in open");
@@ -59,7 +60,7 @@ int main(int argc, char **argv)
     {
         printf("Parent\n");
         file = open(fName, O_WRONLY | O_TRUNC);
-        // sleep(1);
+        
         if (file < 0)
         {
             perror("Error in open");
@@ -68,8 +69,7 @@ int main(int argc, char **argv)
         for (int i; i < 50; ++i)
         {
             writeFunc(file);
-            close(file);
-            file = open(fName, O_WRONLY | O_APPEND);
+            
         }
         close(file);
     }

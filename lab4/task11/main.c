@@ -14,14 +14,28 @@
 
 int main(int argc, char **argv)
 {
-    struct flock lock;
+    struct flock rd_lock, wr_lock, unlock;
     
-    lock.l_whence = SEEK_SET;
-    lock.l_start = 0;
-    lock.l_len = 0;
+    rd_lock.l_type = F_RDLCK;
+    rd_lock.l_whence = SEEK_SET;
+    rd_lock.l_start = 0;
+    rd_lock.l_len = 0;
+
+    wr_lock.l_type = F_WRLCK;
+    wr_lock.l_whence = SEEK_SET;
+    wr_lock.l_start = 0;
+    wr_lock.l_len = 0;
+
+    unlock.l_type = F_UNLCK;
+    unlock.l_whence = SEEK_SET;
+    unlock.l_start = 0;
+    unlock.l_len = 0;
 
     char temp[10];
     int readCount;
+
+    int inFile = STDIN_FILENO;//open("testIn.txt", O_RDWR); //
+    int outFile = STDOUT_FILENO;//open("testOut.txt", O_RDWR | O_TRUNC); //
 
 
     int childId = fork();
@@ -29,34 +43,33 @@ int main(int argc, char **argv)
     if (childId == 0)
     {
         printf("Child\n");
-
+        
         while(1) {
+            if(fcntl(inFile, F_SETLKW, &wr_lock) < 0){
+                perror("Child FCNTL rd_lock error");
+            }
+            readCount = read(inFile, temp, 10);
             
-            readCount = read(0, temp, 10);
+            if(fcntl(inFile, F_SETLK, &unlock) < 0){
+                perror("Child FCNTL rd_unlock error");
+            }
             if(readCount <= 1) {
-                break;
+                return 0;
             }
-            lock.l_type = F_WRLCK;
-            // if(fcntl(STDOUT_FILENO, F_SETLKW, lock) < 0){
-            //     perror("Child FCNTL lock error");
-            // }
-            if(flock(STDOUT_FILENO, LOCK_EX) == 0){
-                printf("Child blocked\n");
-            } else {
-                printf("Child blocked error\n");
-            }
-            
 
-            write(STDOUT_FILENO, "Child:", sizeof("Child:"));
-            write(STDOUT_FILENO, temp, readCount);
-            write(STDOUT_FILENO, "\n", 1);
-            // lock.l_type = F_UNLCK;
-            // fcntl(STDOUT_FILENO, F_SETLKW, lock);
-            if(flock(STDOUT_FILENO, LOCK_UN) == 0){
-                printf("Child unblocked\n");
-            } else {
-                printf("Child unblocked error\n");
+            if(fcntl(outFile, F_SETLKW, &wr_lock) < 0){
+                perror("Child FCNTL wr_lock error");
             }
+
+            write(outFile, "Child:", sizeof("Child:"));
+            write(outFile, temp, readCount);
+            write(outFile, "\n", 1);
+
+            if(fcntl(outFile, F_SETLK, &unlock) < 0){
+                perror("Child FCNTL wr_unlock error");
+            }
+
+            // sleep(1); //with STDOUT and STDIN
         }
         
 
@@ -66,30 +79,31 @@ int main(int argc, char **argv)
         printf("Parent\n");
         while(1) {
             
-            readCount = read(0, temp, 10);
+            if(fcntl(inFile, F_SETLKW, &wr_lock) < 0){
+                perror("Parent FCNTL rd_lock error");
+            }
+            readCount = read(inFile, temp, 10);
+            
+            if(fcntl(inFile, F_SETLK, &unlock) < 0){
+                perror("Parent FCNTL rd_unlock error");
+            }
             if(readCount <= 1) {
-                break;
+                return 0;
             }
-            // lock.l_type = F_WRLCK;
-            // if(fcntl(STDIN_FILENO, F_SETLKW, lock) < 0){
-            //     perror("Parent FCNTL lock error");
-            // }
-            if(flock(STDOUT_FILENO, LOCK_EX) == 0){
-                printf("Parent blocked\n");
-            } else {
-                printf("Parent blocked error\n");
-            }
-            write(STDOUT_FILENO, "Parent:", sizeof("Parent:"));
-            write(STDOUT_FILENO, temp, readCount);
-            write(STDOUT_FILENO, "\n", 1);
 
-            // lock.l_type = F_UNLCK;
-            // fcntl(STDOUT_FILENO, F_SETLKW, lock);
-            if(flock(STDOUT_FILENO, LOCK_UN) == 0){
-                printf("Parent unblocked\n");
-            } else {
-                printf("Parent unblocked error\n");
+            if(fcntl(outFile, F_SETLKW, &wr_lock) < 0){
+                perror("Parent FCNTL wr_lock error");
             }
+
+            write(outFile, "Parent:", sizeof("Parent:"));
+            write(outFile, temp, readCount);
+            write(outFile, "\n", 1);
+
+            if(fcntl(outFile, F_SETLK, &unlock) < 0){
+                perror("Parent FCNTL wr_unlock error");
+            }
+
+            // sleep(1); //with STDOUT and STDIN
         }
     }
 

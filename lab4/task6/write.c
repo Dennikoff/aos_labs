@@ -16,10 +16,10 @@ int main(int argc, char **argv)
     const char* fName = "chanel";
     int file, readCount;
 
-    if ((file = open(fName, O_WRONLY)) < 0) {
+    if ((file = open(fName, O_WRONLY | O_NDELAY)) < 0) {
         perror("file open error");
         exit(-1);
-    } // | O_NDELAY); //
+    } //  //
     while((readCount = read(0, temp, 20)) > 1) {
        write(file, temp, readCount);
     }

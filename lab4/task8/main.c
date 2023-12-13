@@ -29,10 +29,10 @@ int main(int argc, char **argv)
         printf("Child\n");
         char temp[10];
         file = open(fName, O_RDONLY);
-        for (int i; i < 50; ++i)
+        for (int i = 0; i < 50; ++i)
         {
-            // lock.l_type = F_WRLCK;
-            // fcntl(file, F_SETLKW, lock);
+            lock.l_type = F_WRLCK;
+            fcntl(file, F_SETLKW, lock);
             // if (flock(file, LOCK_EX) < 0){
             //     perror("flock error");
             // }
@@ -40,18 +40,18 @@ int main(int argc, char **argv)
             // if (flock(file, LOCK_UN) < 0){
             //     perror("flock error");
             // }
-            // lock.l_type = F_UNLCK;
-            // fcntl(file, F_SETLKW, lock);
+            lock.l_type = F_UNLCK;
+            fcntl(file, F_SETLKW, lock);
             printf("Read from file: %s\n", temp);
         }
         close(file);
     }
     else
     {
-        char* temp = "12345";
+        char* temp = "12345\n";
         printf("Parent\n");
-        file = open(fName, O_WRONLY);
-        for (int i; i < 50; ++i)
+        printf("%d", file = open(fName, O_WRONLY | O_TRUNC));
+        for (int i = 0; i < 50; ++i)
         {
             // lock.l_type = F_WRLCK;
             // fcntl(file, F_SETLKW, lock);
