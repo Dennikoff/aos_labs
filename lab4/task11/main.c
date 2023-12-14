@@ -34,8 +34,8 @@ int main(int argc, char **argv)
     char temp[10];
     int readCount;
 
-    int inFile = STDIN_FILENO;//open("testIn.txt", O_RDWR); //
-    int outFile = STDOUT_FILENO;//open("testOut.txt", O_RDWR | O_TRUNC); //
+    int inFile = open("testIn.txt", O_RDWR); //STDIN_FILENO;//
+    int outFile = open("testOut.txt", O_RDWR | O_TRUNC); //STDOUT_FILENO;//
 
 
     int childId = fork();
