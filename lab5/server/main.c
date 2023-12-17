@@ -51,7 +51,7 @@ int main(int argc, char **argv) {
         }
         return -1;
     }
-    printf("Message:\ntype: %ld\nid From: %d\nid To: %d\ndata: %s\n", Message.mtype, Message.midFrom, Message.midTo, Message.mtext);
+    printf("Message recieve from client:\ntype: %ld\nid From: %d\nid To: %d\ndata: %s\n", Message.mtype, Message.midFrom, Message.midTo, Message.mtext);
     
     Message.midTo = Message.midFrom;
     Message.midFrom = msgId;
