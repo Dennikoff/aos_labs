@@ -73,4 +73,6 @@ int main(int argc, char** argv) {
   printf("msg_perm.cgid = %d\n", msgInfo.msg_perm.cgid); // create gid
   printf("msg_perm.mode = %o\n", msgInfo.msg_perm.mode); // permisions
   printf("msg_perm.__key = %d\n", msgInfo.msg_perm.__key);
+
+    msgctl(msgId, IPC_RMID, NULL);
 }
