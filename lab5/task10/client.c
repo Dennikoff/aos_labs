@@ -29,30 +29,30 @@ void sighandler(int signum) {
 }
 
 int main(int argc, char **argv) {
-  char *progname = "../server/a.out";
+  char *prognameServer = "server.out";
   struct message Message;
-  key_t key = ftok(progname, 0);
-  if (key < 0) {
+  key_t keyServer = ftok(prognameServer, 0);
+  if (keyServer < 0) {
     perror("ftok error");
     exit(-1);
   }
 
   signal(SIGINT, sighandler);
 
-  printf("key = %d\n", key);
+  printf("keyServer = %d\n", keyServer);
+  
 	int msgServer;
-  if ((msgServer = msgget(key, (S_IRUSR | S_IWUSR | IPC_CREAT))) < 0) {
-    perror("msgget error");
+  if ((msgServer = msgget(keyServer, (S_IRUSR | S_IWUSR | IPC_CREAT))) < 0) {
+    perror("msgget server error");
   }
+  
+  printf("msgServer = %d\n", msgServer);
 
-	if ((msgId = msgget(IPC_PRIVATE, S_IWUSR | S_IRUSR)) == -1) {
-		perror("msgset private error");
-	}
-
-	Message.mtype = 10;
+  int type = atoi(argv[1]);
+	Message.mtype = type;
 	strcpy(Message.mtext, "some data");
 	Message.midTo = msgServer;
-  Message.midFrom = msgId;
+  Message.midFrom = msgServer;
   while (1) {
 		if (msgsnd(msgServer, &Message, sizeof(struct message), 0) < 0) {
         perror("msgrcv error");
@@ -61,8 +61,7 @@ int main(int argc, char **argv) {
         }
         return -1;
     }
-    
-		if (msgrcv(msgId, &Message, sizeof(struct message), 10, 0) < 0) { 
+		if (msgrcv(msgServer, &Message, sizeof(struct message), type + 1, 0) < 0) { 
         perror("msgrcv error");
         if (msgctl(msgId, IPC_RMID, 0) == -1) {
             perror("msgctl close error");
@@ -72,9 +71,10 @@ int main(int argc, char **argv) {
     
 		printf("Message recieve from server:\ntype: %ld\nid From: %d\nid To: %d\ndata: %s\n", Message.mtype, Message.midFrom, Message.midTo, Message.mtext);
 
+    Message.mtype = Message.mtype - 1;
     Message.midTo = msgServer;
-  	Message.midFrom = msgId;
-    
+  	Message.midFrom = msgServer;
+    strcpy(Message.mtext, "from client");
 
     sleep(2);
     

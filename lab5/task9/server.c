@@ -44,7 +44,7 @@ int main(int argc, char **argv) {
   }
 
   while (1) {
-    if (msgrcv(msgId, &Message, sizeof(struct message), 10, 0) < 0) { 
+    if (msgrcv(msgId, &Message, sizeof(struct message), 0, 0) < 0) { 
         perror("msgrcv error");
         if (msgctl(msgId, IPC_RMID, 0) == -1) {
             perror("msgctl close error");

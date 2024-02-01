@@ -43,8 +43,10 @@ int main(int argc, char **argv) {
     perror("msgget error");
   }
 
+   printf("msgId = %d\n", msgId);
+
   while (1) {
-    if (msgrcv(msgId, &Message, sizeof(struct message), 10, 0) < 0) { 
+    if (msgrcv(msgId, &Message, sizeof(struct message), 0, 0) < 0) { 
         perror("msgrcv error");
         if (msgctl(msgId, IPC_RMID, 0) == -1) {
             perror("msgctl close error");
@@ -53,9 +55,10 @@ int main(int argc, char **argv) {
     }
     printf("Message recieve from client:\ntype: %ld\nid From: %d\nid To: %d\ndata: %s\n", Message.mtype, Message.midFrom, Message.midTo, Message.mtext);
     
+    Message.mtype = Message.mtype + 1;
     Message.midTo = Message.midFrom;
     Message.midFrom = msgId;
-
+    strcpy(Message.mtext, "from server");
     if (msgsnd(Message.midTo, &Message, sizeof(struct message), 0) < 0) {
         perror("msgrcv error");
         if (msgctl(msgId, IPC_RMID, 0) == -1) {
